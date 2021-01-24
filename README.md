@@ -8,3 +8,12 @@ Disclaimer:
 ## Getting Started
 
 This package is based on products by [BlackMagic Design](https://www.blackmagicdesign.com/).
+
+## License
+
+BlackMagic Design is released under [License](https://github.com/SamsonChris71/blackmagicdesign/blob/master/LICENSE).
+
+## About me
+
+I'm Samson Christopher from India.
+Feel free to mail me.
