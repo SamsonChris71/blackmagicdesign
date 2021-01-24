@@ -8,6 +8,9 @@ Disclaimer:
 ## Getting Started
 
 This package is based on products by [BlackMagic Design](https://www.blackmagicdesign.com/).
+Till now this package was focused to develop remote protocol for [HyperDeck Studio Mini](https://www.blackmagicdesign.com/in/products/hyperdeckstudiomini) and [ATEM Television Studio HD](https://www.blackmagicdesign.com/in/products/atemtelevisionstudio).
+Remote control protocol for other products maybe developed in future.
+If you need any module specific for any other product, please mail me.
 
 ## Installation
 
@@ -31,4 +34,4 @@ BlackMagic Design is released under [License](https://github.com/SamsonChris71/b
 ## About me
 
 I'm Samson Christopher from India.
-Feel free to mail me.
+I like building new stuff.
