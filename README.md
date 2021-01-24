@@ -18,13 +18,13 @@ If you need any module specific for any other product, please mail me.
 Add the package as a dependency in your pubspec.yaml file.
 ```yaml
 dependencies:
-  
+  blackmagicdesign: ^0.0.1
 ```
 
 ### Import
 Import the package in your code file.
 ```dart
-import '';
+import 'package:blackmagicdesign/blackmagicdesign.dart';
 ```
 
 ## License
