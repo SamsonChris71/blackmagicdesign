@@ -9,6 +9,21 @@ Disclaimer:
 
 This package is based on products by [BlackMagic Design](https://www.blackmagicdesign.com/).
 
+## Installation
+
+### Dependency
+Add the package as a dependency in your pubspec.yaml file.
+```yaml
+dependencies:
+  
+```
+
+### Import
+Import the package in your code file.
+```dart
+import '';
+```
+
 ## License
 
 BlackMagic Design is released under [License](https://github.com/SamsonChris71/blackmagicdesign/blob/master/LICENSE).
