@@ -10,29 +10,52 @@ import 'hyperdeck_commands.dart';
   Refer Example code or my github page for implementation.
   For contribution and clarification mail me: samsonchris71@gmail.com
 */
-
+/// Hyperdeck control class
 class HyperDeck {
   // Necessary Data
+  /// IP address of the hyperdeck to connect to
   static String hyperDeckIP = '';
   static bool status = false;
+
+  /// Port to connect via telnet
   static int port = 9993;
+
+  /// Socket to hold the open connection, pass commands,
+  /// and listen for events
   static Socket? socket;
+
+  /// Most recent data received from the hyperdeck
   static String responseData = '';
 
   // Device Info
+  /// Name of the hyperdeck device
   static String deviceName = '';
+
+  /// Hyperdeck status
   static String deviceStatus = '';
+
+  /// Speed
   static String speed = '';
+
+  /// Slot ID
   static String slotId = '';
+
+  /// Clip ID
   static String clipId = '';
   static String displayTimecode = '';
+
+  /// Timecode
   static String timecode = '';
+
+  /// Video format
   static String videoFormat = '';
   static String loop = '';
   static String timeline = '';
+
+  /// Input video format
   static String inputVideoFormat = '';
 
-  // Basic connect protocol, sends connection package to the device
+  /// Connect to hyperdeck via open socket and listen to data
   static void connect() {
     Socket.connect(hyperDeckIP, port).then((Socket sock) {
       socket = sock;
@@ -45,7 +68,7 @@ class HyperDeck {
     });
   }
 
-  // Method to handle data returned from connection protocol
+  /// Handle data returned from connection protocol
   static void dataHandler(data) {
     status = true;
     responseData = String.fromCharCodes(data).trim();
@@ -68,32 +91,32 @@ class HyperDeck {
     }
   }
 
-  // Method to handle error (if any) returned from connection protocol
+  /// Handle error (if any) returned from connection protocol
   static void errorHandler(error, StackTrace trace) {
     print(error);
   }
 
-  // Method to destroy socket connection after use
+  /// Destroy socket connection (once no longer needed)
   static void doneHandler() {
     socket?.destroy();
   }
 
-  // Method to get device info
+  /// Get hyperdeck info
   static void deviceInfo() {
     socket?.write(cHDDeviceInfo);
   }
 
-  // Method to get current status of hyperdeck
+  /// Get current status of hyperdeck
   static void info() {
     socket?.write(cHDUpdateInfo);
   }
 
-  // Method to send record command to HyperDeck
+  /// Send record command to hyperdeck
   static void record() {
     socket?.write(cHDRecord);
   }
 
-  // Method to send stop command to HyperDeck
+  /// Send stop command to hyperdeck
   static void stopRecording() {
     socket?.write(cHDUpdateInfo);
   }
