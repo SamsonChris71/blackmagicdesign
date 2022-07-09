@@ -3,7 +3,6 @@ import 'hyperdeck_commands.dart';
 
 /* 
   This package was tested against 'HypderDeck Studio Mini'
-  No need to create objects. Call the class and access any data.
   This class uses default Dart I/O, so there's no need for third party packages.
   HyperDeck communicates via telnet protocol.
   For telnet protocol, This package uses dart's Socket class.
