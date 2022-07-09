@@ -8,5 +8,5 @@ class ATEM {
   static bool status = false;
   static String deviceName = '';
   static int port = 9993;
-  static String responseData;
+  static String responseData = '';
 }

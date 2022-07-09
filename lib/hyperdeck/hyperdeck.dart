@@ -16,28 +16,32 @@ class HyperDeck {
   static String hyperDeckIP = '';
   static bool status = false;
   static int port = 9993;
-  static Socket socket;
-  static String responseData;
+  static Socket? socket;
+  static String responseData = '';
 
   // Device Info
-  static String deviceName;
-  static String deviceStatus;
-  static String speed;
-  static String slotId;
-  static String clipId;
-  static String displayTimecode;
-  static String timecode;
-  static String videoFormat;
-  static String loop;
-  static String timeline;
-  static String inputVideoFormat;
+  static String deviceName = '';
+  static String deviceStatus = '';
+  static String speed = '';
+  static String slotId = '';
+  static String clipId = '';
+  static String displayTimecode = '';
+  static String timecode = '';
+  static String videoFormat = '';
+  static String loop = '';
+  static String timeline = '';
+  static String inputVideoFormat = '';
 
   // Basic connect protocol, sends connection package to the device
   static void connect() {
     Socket.connect(hyperDeckIP, port).then((Socket sock) {
       socket = sock;
-      socket.listen(dataHandler,
-          onError: errorHandler, onDone: doneHandler, cancelOnError: false);
+      socket?.listen(
+        dataHandler,
+        onError: errorHandler,
+        onDone: doneHandler,
+        cancelOnError: false,
+      );
     });
   }
 
@@ -71,26 +75,26 @@ class HyperDeck {
 
   // Method to destroy socket connection after use
   static void doneHandler() {
-    socket.destroy();
+    socket?.destroy();
   }
 
   // Method to get device info
   static void deviceInfo() {
-    socket.write(cHDDeviceInfo);
+    socket?.write(cHDDeviceInfo);
   }
 
   // Method to get current status of hyperdeck
   static void info() {
-    socket.write(cHDUpdateInfo);
+    socket?.write(cHDUpdateInfo);
   }
 
   // Method to send record command to HyperDeck
   static void record() {
-    socket.write(cHDRecord);
+    socket?.write(cHDRecord);
   }
 
   // Method to send stop command to HyperDeck
   static void stopRecording() {
-    socket.write(cHDUpdateInfo);
+    socket?.write(cHDUpdateInfo);
   }
 }
