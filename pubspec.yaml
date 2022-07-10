@@ -1,6 +1,6 @@
 name: blackmagicdesign
 description: Let's you develop your own remote application for BMD devices.
-version: 0.1.2
+version: 1.0.0
 homepage: https://github.com/SamsonChris71/blackmagicdesign
 
 environment:
