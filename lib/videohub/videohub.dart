@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
+
+import 'package:persistent_socket/persistent_socket.dart';
 
 import 'models/device_info.dart';
 import 'models/video_input.dart';
@@ -21,7 +22,7 @@ class Videohub {
   Videohub(
     this.ipAddress, {
     this.port = 9990,
-  }) {
+  }) : _socket = PersistentSocket(ipAddress, port) {
     _streamController = StreamController(
       onListen: _onListen,
       onPause: () => _socketSub?.pause(),
@@ -49,7 +50,7 @@ class Videohub {
   bool _takeMode = true;
 
   /// Socket connected to the videohub
-  Socket? _socket;
+  final PersistentSocket _socket;
 
   /// Subscription to incoming data from the socket
   StreamSubscription<Uint8List>? _socketSub;
@@ -63,17 +64,19 @@ class Videohub {
   Stream<VideohubData> get stream => _streamController.stream;
 
   /// Applies the supplied [VideoRoute] to the routing matrix
-  void takeRoute(VideoRoute route) =>
-      takeRouteByIndex(route.input.index, route.output.index);
+  Future<void> takeRoute(VideoRoute route) async =>
+      await takeRouteByIndex(route.input.index, route.output.index);
 
   /// Establishes a route from an input to an output by index
-  void takeRouteByIndex(int inputIndex, int outputIndex) =>
-      _socket?.write('VIDEO OUTPUT ROUTING:\n$outputIndex $inputIndex\n\n');
+  Future<void> takeRouteByIndex(int inputIndex, int outputIndex) async =>
+      await _socket.sendString(
+        'VIDEO OUTPUT ROUTING:\n$outputIndex $inputIndex\n\n',
+        reconnect: true,
+      );
 
   /// Initiate connection and begin listening for incoming data
   Future<void> _onListen() async {
-    _socket = await Socket.connect(ipAddress, port);
-    _socketSub = _socket?.listen(
+    _socketSub = _socket.stream.listen(
       _onData,
       onDone: _onDone,
       onError: _onError,
@@ -134,7 +137,10 @@ class Videohub {
 
   Future<void> _onDone() async {
     await _socketSub?.cancel();
-    await _socket?.close();
+    _socket.close();
     await _streamController.close();
   }
+
+  /// Disconnects from the videohub
+  Future<void> disconnect() async => _socket.close();
 }
