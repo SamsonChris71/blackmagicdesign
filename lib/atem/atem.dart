@@ -4,9 +4,16 @@
 */
 
 class ATEM {
-  static String atemIP = '';
-  static bool status = false;
-  static String deviceName = '';
-  static int port = 9993;
-  static String responseData;
+  /// IP address of the ATEM to connect to
+  String atemIP = '';
+  bool status = false;
+
+  /// Name of the ATEM
+  String deviceName = '';
+
+  /// Port to connect via telnet
+  int port = 9993;
+
+  /// Most recent data received from the ATEM
+  String responseData = '';
 }

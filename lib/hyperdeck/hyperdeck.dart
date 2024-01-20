@@ -1,48 +1,75 @@
 import 'dart:io';
+
 import 'hyperdeck_commands.dart';
 
 /* 
   This package was tested against 'HypderDeck Studio Mini'
-  No need to create objects. Call the class and access any data.
   This class uses default Dart I/O, so there's no need for third party packages.
   HyperDeck communicates via telnet protocol.
   For telnet protocol, This package uses dart's Socket class.
   Refer Example code or my github page for implementation.
   For contribution and clarification mail me: samsonchris71@gmail.com
 */
-
+/// Hyperdeck control class
 class HyperDeck {
   // Necessary Data
-  static String hyperDeckIP = '';
-  static bool status = false;
-  static int port = 9993;
-  static Socket socket;
-  static String responseData;
+  /// IP address of the hyperdeck to connect to
+  String hyperDeckIP = '';
+  bool status = false;
+
+  /// Port to connect via telnet
+  int port = 9993;
+
+  /// Socket to hold the open connection, pass commands,
+  /// and listen for events
+  Socket? socket;
+
+  /// Most recent data received from the hyperdeck
+  String responseData = '';
 
   // Device Info
-  static String deviceName;
-  static String deviceStatus;
-  static String speed;
-  static String slotId;
-  static String clipId;
-  static String displayTimecode;
-  static String timecode;
-  static String videoFormat;
-  static String loop;
-  static String timeline;
-  static String inputVideoFormat;
+  /// Name of the hyperdeck device
+  String deviceName = '';
 
-  // Basic connect protocol, sends connection package to the device
-  static void connect() {
+  /// Hyperdeck status
+  String deviceStatus = '';
+
+  /// Speed
+  String speed = '';
+
+  /// Slot ID
+  String slotId = '';
+
+  /// Clip ID
+  String clipId = '';
+  String displayTimecode = '';
+
+  /// Timecode
+  String timecode = '';
+
+  /// Video format
+  String videoFormat = '';
+  String loop = '';
+  String timeline = '';
+
+  /// Input video format
+  String inputVideoFormat = '';
+
+  /// Connect to hyperdeck via open socket and listen to data
+  void connect() {
     Socket.connect(hyperDeckIP, port).then((Socket sock) {
       socket = sock;
-      socket.listen(dataHandler,
-          onError: errorHandler, onDone: doneHandler, cancelOnError: false);
+      socket?.listen(
+        dataHandler,
+        onError: errorHandler,
+        onDone: doneHandler,
+        cancelOnError: false,
+      );
     });
   }
 
-  // Method to handle data returned from connection protocol
-  static void dataHandler(data) {
+  /// Handle data returned from connection protocol
+  void dataHandler(data) {
     status = true;
     responseData = String.fromCharCodes(data).trim();
     print('HyperDeck Response: $responseData');
@@ -64,33 +91,33 @@ class HyperDeck {
     }
   }
 
-  // Method to handle error (if any) returned from connection protocol
-  static void errorHandler(error, StackTrace trace) {
+  /// Handle error (if any) returned from connection protocol
+  void errorHandler(error, StackTrace trace) {
     print(error);
   }
 
-  // Method to destroy socket connection after use
-  static void doneHandler() {
-    socket.destroy();
+  /// Destroy socket connection (once no longer needed)
+  void doneHandler() {
+    socket?.destroy();
   }
 
-  // Method to get device info
-  static void deviceInfo() {
-    socket.write(cHDDeviceInfo);
+  /// Get hyperdeck info
+  void deviceInfo() {
+    socket?.write(cHDDeviceInfo);
   }
 
-  // Method to get current status of hyperdeck
-  static void info() {
-    socket.write(cHDUpdateInfo);
+  /// Get current status of hyperdeck
+  void info() {
+    socket?.write(cHDUpdateInfo);
   }
 
-  // Method to send record command to HyperDeck
-  static void record() {
-    socket.write(cHDRecord);
+  /// Send record command to hyperdeck
+  void record() {
+    socket?.write(cHDRecord);
   }
 
-  // Method to send stop command to HyperDeck
-  static void stopRecording() {
-    socket.write(cHDUpdateInfo);
+  /// Send stop command to hyperdeck
+  void stopRecording() {
+    socket?.write(cHDUpdateInfo);
   }
 }
