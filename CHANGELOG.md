@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0]
+
+### Changed
+
+- Migrated the package to null safety and current Dart SDKs.
+- Made HyperDeck connection handling asynchronous and added `close()`.
+- Corrected `stopRecording()` to send the HyperDeck `stop` command.
+
 ## [0.0.1] - 01-24-2021.
 
 ### Added

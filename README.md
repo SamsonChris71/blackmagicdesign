@@ -1,16 +1,18 @@
-# BlackMagic Design
+# Blackmagic Design
 
-Let's you develop your own remote application for BMD devices.
+Dart utilities for building remote-control applications for Blackmagic Design
+devices. This package currently provides basic Ethernet-protocol support for
+HyperDeck devices.
 
-Disclaimer: 
-    **This is not official BlackMagic Package**. This is a work of an individual who doesn't belong to any organization or company.
+> This is an independent, unofficial package and is not affiliated with
+> Blackmagic Design.
 
 ## Getting Started
 
-This package is based on products by [BlackMagic Design](https://www.blackmagicdesign.com/).
-Till now this package was focused to develop remote protocol for [HyperDeck Studio Mini](https://www.blackmagicdesign.com/in/products/hyperdeckstudiomini) and [ATEM Television Studio HD](https://www.blackmagicdesign.com/in/products/atemtelevisionstudio).
-Remote control protocol for other products maybe developed in future.
-If you need any module specific for any other product, please mail me.
+The HyperDeck API communicates through a TCP socket using Blackmagic Design's
+Ethernet protocol. Configure the device address, await a connection, and issue
+commands. Device and transport responses update the corresponding static
+properties on `HyperDeck`.
 
 ## Installation
 
@@ -18,7 +20,7 @@ If you need any module specific for any other product, please mail me.
 Add the package as a dependency in your pubspec.yaml file.
 ```yaml
 dependencies:
-  blackmagicdesign: ^0.0.1
+  blackmagicdesign: ^0.1.0
 ```
 
 ### Import
@@ -26,6 +28,26 @@ Import the package in your code file.
 ```dart
 import 'package:blackmagicdesign/blackmagicdesign.dart';
 ```
+
+## HyperDeck example
+
+```dart
+import 'package:blackmagicdesign/blackmagicdesign.dart';
+
+Future<void> main() async {
+  HyperDeck.hyperDeckIP = '192.168.10.50';
+  await HyperDeck.connect();
+
+  HyperDeck.deviceInfo();
+  HyperDeck.info();
+  HyperDeck.record();
+
+  await HyperDeck.close();
+}
+```
+
+Calling a command before `connect()` throws a `StateError`. Connection failures
+are reported as `SocketException`s from `connect()`.
 
 ## License
 

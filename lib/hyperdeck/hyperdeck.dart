@@ -1,96 +1,150 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+
 import 'hyperdeck_commands.dart';
 
-/* 
-  This package was tested against 'HypderDeck Studio Mini'
-  No need to create objects. Call the class and access any data.
-  This class uses default Dart I/O, so there's no need for third party packages.
-  HyperDeck communicates via telnet protocol.
-  For telnet protocol, This package uses dart's Socket class.
-  Refer Example code or my github page for implementation.
-  For contribution and clarification mail me: samsonchris71@gmail.com
-*/
-
+/// Controls a Blackmagic Design HyperDeck through its Ethernet protocol.
+///
+/// Configure [hyperDeckIP] and optionally [port], then await [connect] before
+/// issuing commands such as [record], [stopRecording], [deviceInfo], or [info].
 class HyperDeck {
-  // Necessary Data
+  /// Address or host name of the HyperDeck device.
   static String hyperDeckIP = '';
+
+  /// Whether a socket connection is currently active.
   static bool status = false;
+
+  /// TCP port used by the HyperDeck Ethernet protocol.
   static int port = 9993;
-  static Socket socket;
-  static String responseData;
 
-  // Device Info
-  static String deviceName;
-  static String deviceStatus;
-  static String speed;
-  static String slotId;
-  static String clipId;
-  static String displayTimecode;
-  static String timecode;
-  static String videoFormat;
-  static String loop;
-  static String timeline;
-  static String inputVideoFormat;
+  /// The active device socket, or `null` before connecting and after closing.
+  static Socket? socket;
 
-  // Basic connect protocol, sends connection package to the device
-  static void connect() {
-    Socket.connect(hyperDeckIP, port).then((Socket sock) {
-      socket = sock;
-      socket.listen(dataHandler,
-          onError: errorHandler, onDone: doneHandler, cancelOnError: false);
-    });
-  }
+  /// The most recent complete response received from the device.
+  static String? responseData;
 
-  // Method to handle data returned from connection protocol
-  static void dataHandler(data) {
+  /// Name reported by the connected device.
+  static String? deviceName;
+
+  /// Current transport state reported by the device.
+  static String? deviceStatus;
+
+  /// Current playback speed reported by the device.
+  static String? speed;
+
+  /// Active storage slot identifier.
+  static String? slotId;
+
+  /// Current clip identifier.
+  static String? clipId;
+
+  /// Current display timecode.
+  static String? displayTimecode;
+
+  /// Current timecode.
+  static String? timecode;
+
+  /// Current video format.
+  static String? videoFormat;
+
+  /// Whether loop playback is enabled.
+  static String? loop;
+
+  /// Current timeline state.
+  static String? timeline;
+
+  /// Input video format reported by the device.
+  static String? inputVideoFormat;
+
+  static StreamSubscription<List<int>>? _subscription;
+
+  /// Opens a connection to the configured HyperDeck.
+  ///
+  /// Throws a [SocketException] when the device cannot be reached.
+  static Future<void> connect() async {
+    await close();
+    final connectedSocket = await Socket.connect(hyperDeckIP, port);
+    socket = connectedSocket;
     status = true;
-    responseData = String.fromCharCodes(data).trim();
-    print('HyperDeck Response: $responseData');
-    if (responseData.contains('connection info:')) {
-      deviceName = responseData.split('\n').last.split(':').last.trim();
-    }
-
-    if (responseData.contains('transport info:')) {
-      deviceStatus = responseData.split('\n')[1].split(':').last.trim();
-      speed = responseData.split('\n')[2].split(':').last.trim();
-      slotId = responseData.split('\n')[3].split(':').last.trim();
-      clipId = responseData.split('\n')[4].split(':').last.trim();
-      displayTimecode = responseData.split('\n')[6].split(' ').last.trim();
-      timecode = responseData.split('\n')[7].split(':').last.trim();
-      videoFormat = responseData.split('\n')[8].split(':').last.trim();
-      loop = responseData.split('\n')[9].split(':').last.trim();
-      timeline = responseData.split('\n')[10].split(':').last.trim();
-      inputVideoFormat = responseData.split('\n')[11].split(':').last.trim();
-    }
+    _subscription = connectedSocket.listen(
+      dataHandler,
+      onError: errorHandler,
+      onDone: doneHandler,
+      cancelOnError: false,
+    );
   }
 
-  // Method to handle error (if any) returned from connection protocol
-  static void errorHandler(error, StackTrace trace) {
-    print(error);
+  /// Closes the active connection, if one exists.
+  static Future<void> close() async {
+    await _subscription?.cancel();
+    _subscription = null;
+    socket?.destroy();
+    socket = null;
+    status = false;
   }
 
-  // Method to destroy socket connection after use
+  /// Processes bytes received from the HyperDeck.
+  static void dataHandler(List<int> data) {
+    responseData = utf8.decode(data, allowMalformed: true).trim();
+    status = true;
+    _parseResponse(responseData!);
+  }
+
+  /// Handles socket errors by marking the connection inactive.
+  static void errorHandler(Object error, StackTrace stackTrace) {
+    status = false;
+  }
+
+  /// Handles normal socket closure.
   static void doneHandler() {
-    socket.destroy();
+    socket = null;
+    status = false;
   }
 
-  // Method to get device info
-  static void deviceInfo() {
-    socket.write(cHDDeviceInfo);
+  /// Requests device information.
+  static void deviceInfo() => _send(cHDDeviceInfo);
+
+  /// Requests the current transport state.
+  static void info() => _send(cHDUpdateInfo);
+
+  /// Starts recording.
+  static void record() => _send(cHDRecord);
+
+  /// Stops playback or recording.
+  static void stopRecording() => _send(cHDStop);
+
+  static void _send(String command) {
+    final activeSocket = socket;
+    if (activeSocket == null) {
+      throw StateError('HyperDeck is not connected. Call connect() first.');
+    }
+    activeSocket.write(command);
   }
 
-  // Method to get current status of hyperdeck
-  static void info() {
-    socket.write(cHDUpdateInfo);
-  }
+  static void _parseResponse(String response) {
+    final values = <String, String>{};
+    for (final line in response.split('\n')) {
+      final separator = line.indexOf(':');
+      if (separator < 0) continue;
+      values[line.substring(0, separator).trim().toLowerCase()] =
+          line.substring(separator + 1).trim();
+    }
 
-  // Method to send record command to HyperDeck
-  static void record() {
-    socket.write(cHDRecord);
-  }
-
-  // Method to send stop command to HyperDeck
-  static void stopRecording() {
-    socket.write(cHDUpdateInfo);
+    if (response.contains('connection info:')) {
+      deviceName = values['model'] ?? values['device name'];
+    }
+    if (response.contains('transport info:')) {
+      deviceStatus = values['status'];
+      speed = values['speed'];
+      slotId = values['slot id'];
+      clipId = values['clip id'];
+      displayTimecode = values['display timecode'];
+      timecode = values['timecode'];
+      videoFormat = values['video format'];
+      loop = values['loop'];
+      timeline = values['timeline'];
+      inputVideoFormat = values['input video format'];
+    }
   }
 }
