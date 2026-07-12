@@ -49,10 +49,15 @@ Future<void> main() async {
 Calling a command before `connect()` throws a `StateError`. Connection failures
 are reported as `SocketException`s from `connect()`.
 
-An executable version is also available in [`example/main.dart`](example/main.dart):
+An executable version is also available in [`example/main.dart`](example/main.dart).
+It supports device and transport inspection, plus explicit `record` and `stop`
+commands:
 
 ```sh
 dart run example/main.dart 192.168.10.50
+dart run example/main.dart 192.168.10.50 --port 9993 info
+dart run example/main.dart 192.168.10.50 record
+dart run example/main.dart 192.168.10.50 stop
 ```
 
 ## License
