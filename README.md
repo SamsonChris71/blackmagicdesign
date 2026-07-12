@@ -49,6 +49,12 @@ Future<void> main() async {
 Calling a command before `connect()` throws a `StateError`. Connection failures
 are reported as `SocketException`s from `connect()`.
 
+An executable version is also available in [`example/main.dart`](example/main.dart):
+
+```sh
+dart run example/main.dart 192.168.10.50
+```
+
 ## License
 
 BlackMagic Design is released under [License](https://github.com/SamsonChris71/blackmagicdesign/blob/master/LICENSE).
