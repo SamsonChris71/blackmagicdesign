@@ -1,8 +1,8 @@
 # Blackmagic Design
 
 Dart utilities for building remote-control applications for Blackmagic Design
-devices. This package currently provides basic Ethernet-protocol support for
-HyperDeck devices.
+devices. This package supports the complete Ethernet protocol and the
+HyperDeck Control REST API.
 
 > This is an independent, unofficial package and is not affiliated with
 > Blackmagic Design.
@@ -12,7 +12,9 @@ HyperDeck devices.
 The HyperDeck API communicates through a TCP socket using Blackmagic Design's
 Ethernet protocol. Configure the device address, await a connection, and issue
 commands. Device and transport responses update the corresponding static
-properties on `HyperDeck`.
+properties on `HyperDeck`. For new applications, prefer `HyperDeckConnection`:
+it has a response future for every command and a stream of unsolicited device
+notifications.
 
 ## Installation
 
@@ -48,6 +50,49 @@ Future<void> main() async {
 
 Calling a command before `connect()` throws a `StateError`. Connection failures
 are reported as `SocketException`s from `connect()`.
+
+## Complete Ethernet protocol
+
+Every command in the Ethernet protocol is available through `command` and
+`multilineCommand`, so support is not limited by this package when device
+firmware adds a parameter.
+
+```dart
+final deck = await HyperDeckConnection.connect('192.168.10.50');
+await deck.command('play', {
+  'clip id': 5,
+  'speed': 100,
+  'loop': true,
+});
+await deck.multilineCommand('nas add', {
+  'url': 'smb://nas.local/media',
+  'username': 'editor',
+  'password': 'secret',
+});
+await deck.close();
+```
+
+`HyperDeckConnection` also provides named methods for every documented
+Ethernet operation, including `clipsAdd`, `slotSelect`, `prepareFormat`,
+`authenticate`, slate, NAS, playback, record, configuration and notification
+operations. `command()` and `multilineCommand()` remain available for new
+firmware-specific parameters.
+
+## REST API
+
+`HyperDeckRestClient` accepts the REST API base URL and exposes generic `get`,
+`put`, `post`, `delete`, and `request` methods for every documented endpoint,
+plus named operations for transports, system, media, NAS, timelines, clips,
+audio and monitoring. `connectEvents()` exposes the notification WebSocket;
+use `subscribe()` and `unsubscribe()` on the returned socket.
+
+```dart
+final api = HyperDeckRestClient(Uri.parse('http://192.168.10.50/'));
+await api.record('Interview_001');
+await api.put('/transports/0/playback', {'speed': 1.0, 'loop': false});
+final clips = await api.get('/clips');
+await api.close();
+```
 
 An executable version is also available in [`example/main.dart`](example/main.dart).
 It supports device and transport inspection, plus explicit `record` and `stop`
