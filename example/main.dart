@@ -13,8 +13,8 @@ import 'package:blackmagicdesign/blackmagicdesign.dart';
 /// dart run example/main.dart 192.168.10.50 stop
 /// ```
 ///
-/// The default and `info` commands only request device and transport details.
-/// `record` and `stop` control the HyperDeck and should be used with care.
+/// The default and info commands only request device and transport details.
+/// record and stop control the HyperDeck and should be used with care.
 Future<void> main(List<String> arguments) async {
   final configuration = _parseArguments(arguments);
   if (configuration == null) {
@@ -34,11 +34,11 @@ Future<void> main(List<String> arguments) async {
         await _showDeviceInfo();
         break;
       case _Command.record:
-        HyperDeck.record();
+        await HyperDeck.record();
         print('Recording started.');
         break;
       case _Command.stop:
-        HyperDeck.stopRecording();
+        await HyperDeck.stopRecording();
         print('Playback or recording stopped.');
         break;
     }
@@ -56,15 +56,13 @@ Future<void> main(List<String> arguments) async {
 }
 
 Future<void> _showDeviceInfo() async {
-  HyperDeck.deviceInfo();
-  await Future<void>.delayed(const Duration(milliseconds: 200));
-  print('Device: ${HyperDeck.deviceName ?? 'waiting for response'}');
+  final device = await HyperDeck.deviceInfo();
+  print('Device: ${device.values['model'] ?? device.values['name'] ?? 'unknown'}');
 
-  HyperDeck.info();
-  await Future<void>.delayed(const Duration(milliseconds: 200));
-  print('Status: ${HyperDeck.deviceStatus ?? 'waiting for response'}');
-  print('Timecode: ${HyperDeck.timecode ?? 'waiting for response'}');
-  print('Clip ID: ${HyperDeck.clipId ?? 'waiting for response'}');
+  final transport = await HyperDeck.info();
+  print('Status: ${transport.values['status'] ?? 'unknown'}');
+  print('Timecode: ${transport.values['timecode'] ?? 'unknown'}');
+  print('Clip ID: ${transport.values['clip id'] ?? 'unknown'}');
 }
 
 _Configuration? _parseArguments(List<String> arguments) {

@@ -73,6 +73,7 @@ class HyperDeckConnection {
   // Named operations for the complete Ethernet protocol. Map arguments use
   // the parameter names from Blackmagic's protocol document verbatim.
   Future<HyperDeckResponse> help() => send(HyperDeckCommand.help);
+  Future<HyperDeckResponse> shortHelp() => send(HyperDeckCommand.shortHelp);
   Future<HyperDeckResponse> supportedCommands() =>
       send(HyperDeckCommand.commands);
   Future<HyperDeckResponse> deviceInfo() => send(HyperDeckCommand.deviceInfo);
@@ -100,9 +101,10 @@ class HyperDeckConnection {
   Future<HyperDeckResponse> record(
           [Map<String, Object?> parameters = const {}]) =>
       command('record', parameters);
-  Future<HyperDeckResponse> recordSpill(
-          [Map<String, Object?> parameters = const {}]) =>
-      command('record spill', parameters);
+  Future<HyperDeckResponse> recordSpill() =>
+      send(HyperDeckCommand.recordSpill);
+  Future<HyperDeckResponse> recordSpillToSlot(int slotId) =>
+      command('record', {'spill': 'slot id: $slotId'});
   Future<HyperDeckResponse> spillOrder() => send(HyperDeckCommand.spillOrder);
   Future<HyperDeckResponse> stop() => send(HyperDeckCommand.stop);
   Future<HyperDeckResponse> clipsCount() => send(HyperDeckCommand.clipsCount);

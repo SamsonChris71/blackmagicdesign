@@ -6,7 +6,7 @@
 class HyperDeckCommand {
   HyperDeckCommand._();
 
-  /// Creates a single-line command, for example `play: speed: 100`.
+  /// Creates a single-line command, for example play: speed: 100.
   static String single(String name,
       [Map<String, Object?> parameters = const {}]) {
     if (parameters.isEmpty) return '$name\n';
@@ -32,6 +32,7 @@ class HyperDeckCommand {
       value is bool ? value.toString() : '$value';
 
   static const String help = 'help\n';
+  static const String shortHelp = '?\n';
   static const String commands = 'commands\n';
   static const String deviceInfo = 'device info\n';
   static const String diskList = 'disk list\n';

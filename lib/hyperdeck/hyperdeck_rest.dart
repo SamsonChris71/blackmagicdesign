@@ -309,7 +309,7 @@ class HyperDeckRestException implements Exception {
 
 /// Client for the REST API notification WebSocket. The device replies to
 /// subscribe, unsubscribe, listSubscriptions and listProperties commands on
-/// [messages], and emits `propertyValueChanged` events on the same stream.
+/// [messages], and emits propertyValueChanged events on the same stream.
 class HyperDeckEventSocket {
   HyperDeckEventSocket._(this._socket);
   final WebSocket _socket;
@@ -317,8 +317,10 @@ class HyperDeckEventSocket {
   static Future<HyperDeckEventSocket> connect(Uri baseUri,
       {String path = '/event'}) async {
     final scheme = baseUri.scheme == 'https' ? 'wss' : 'ws';
-    final uri = baseUri.replace(
-        scheme: scheme, path: path, query: null, fragment: null);
+    final resolved = baseUri.resolve(
+      path.startsWith('/') ? path.substring(1) : path,
+    );
+    final uri = resolved.replace(scheme: scheme, query: null, fragment: null);
     return HyperDeckEventSocket._(await WebSocket.connect(uri.toString()));
   }
 
