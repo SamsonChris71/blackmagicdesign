@@ -62,7 +62,8 @@ class WebPresenterConnection {
   }
 
   final Socket socket;
-  final Map<String, Map<String, String>> state = <String, Map<String, String>>{};
+  final Map<String, Map<String, String>> state =
+      <String, Map<String, String>>{};
   final StreamController<WebPresenterBlock> _blocks =
       StreamController.broadcast();
   final List<_PendingBlock> _pending = <_PendingBlock>[];
@@ -121,15 +122,16 @@ class WebPresenterConnection {
   Future<WebPresenterBlock> network() => requestStatus('NETWORK');
   Future<WebPresenterBlock> networkInterface(int index) =>
       requestStatus('NETWORK INTERFACE $index');
-  Future<WebPresenterBlock> configureNetworkInterface(int index,
-          Map<String, Object?> settings) =>
+  Future<WebPresenterBlock> configureNetworkInterface(
+          int index, Map<String, Object?> settings) =>
       sendBlock('NETWORK INTERFACE $index', settings);
   Future<WebPresenterBlock> uiSettings() => requestStatus('UI SETTINGS');
   Future<WebPresenterBlock> configureUi(Map<String, Object?> settings) =>
       sendBlock('UI SETTINGS', settings);
 
   // Streaming blocks.
-  Future<WebPresenterBlock> streamSettings() => requestStatus('STREAM SETTINGS');
+  Future<WebPresenterBlock> streamSettings() =>
+      requestStatus('STREAM SETTINGS');
   Future<WebPresenterBlock> configureStream(Map<String, Object?> settings) =>
       sendBlock('STREAM SETTINGS', settings);
   Future<WebPresenterBlock> streamXml() => requestStatus('STREAM XML');
@@ -175,7 +177,9 @@ class WebPresenterConnection {
       text = text.substring(boundary + 2);
       if (raw.isNotEmpty) _dispatch(_parse(raw));
     }
-    _buffer..clear()..write(text);
+    _buffer
+      ..clear()
+      ..write(text);
   }
 
   WebPresenterBlock _parse(String raw) {
@@ -195,8 +199,8 @@ class WebPresenterConnection {
   void _dispatch(WebPresenterBlock block) {
     final normalized = block.name.toUpperCase();
     if (normalized == 'ACK' || normalized == 'NACK') {
-      final pendingIndex = _pending.indexWhere((pending) =>
-          pending.expectedBlock == null || !pending.acknowledged);
+      final pendingIndex = _pending.indexWhere(
+          (pending) => pending.expectedBlock == null || !pending.acknowledged);
       if (pendingIndex >= 0) {
         final pending = _pending[pendingIndex];
         if (normalized == 'NACK') {
@@ -211,7 +215,9 @@ class WebPresenterConnection {
       }
       return;
     }
-    state.putIfAbsent(normalized, () => <String, String>{}).addAll(block.values);
+    state
+        .putIfAbsent(normalized, () => <String, String>{})
+        .addAll(block.values);
     _blocks.add(block);
     final pendingIndex =
         _pending.indexWhere((pending) => pending.expectedBlock == normalized);
@@ -229,6 +235,7 @@ class WebPresenterConnection {
       _pending.removeAt(0).completer.completeError(error, stackTrace);
     }
   }
+
   Future<void> close() async {
     if (_closed) return;
     _closed = true;
@@ -240,7 +247,8 @@ class WebPresenterConnection {
   static String _formatValue(Object value) {
     if (value is Iterable) {
       return value
-          .map((item) => '$item'.replaceAll('\\', '\\\\').replaceAll(',', '\\,'))
+          .map(
+              (item) => '$item'.replaceAll('\\', '\\\\').replaceAll(',', '\\,'))
           .join(', ');
     }
     return '$value';

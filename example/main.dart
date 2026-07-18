@@ -57,7 +57,8 @@ Future<void> main(List<String> arguments) async {
 
 Future<void> _showDeviceInfo() async {
   final device = await HyperDeck.deviceInfo();
-  print('Device: ${device.values['model'] ?? device.values['name'] ?? 'unknown'}');
+  print(
+      'Device: ${device.values['model'] ?? device.values['name'] ?? 'unknown'}');
 
   final transport = await HyperDeck.info();
   print('Status: ${transport.values['status'] ?? 'unknown'}');

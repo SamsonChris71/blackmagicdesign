@@ -34,8 +34,9 @@ class HyperDeckRestClient {
     }
     final result =
         HyperDeckRestResponse(response.statusCode, value, response.headers);
-    if (response.statusCode < 200 || response.statusCode >= 300)
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       throw HyperDeckRestException(result);
+    }
     return result;
   }
 

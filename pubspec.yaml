@@ -2,7 +2,7 @@ name: blackmagicdesign
 description: >-
   Dart client utilities for controlling Blackmagic Design HyperDeck and Web
   Presenter devices.
-version: 0.2.1
+version: 0.2.2
 homepage: https://github.com/SamsonChris71/blackmagicdesign
 repository: https://github.com/SamsonChris71/blackmagicdesign
 issue_tracker: https://github.com/SamsonChris71/blackmagicdesign/issues

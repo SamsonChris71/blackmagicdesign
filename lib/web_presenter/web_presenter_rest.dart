@@ -68,7 +68,8 @@ class WebPresenterRestClient {
       request('PUT', path, body: body);
   Future<WebPresenterRestResponse> post(String path, [Object? body]) =>
       request('POST', path, body: body);
-  Future<WebPresenterRestResponse> delete(String path) => request('DELETE', path);
+  Future<WebPresenterRestResponse> delete(String path) =>
+      request('DELETE', path);
   Future<void> close({bool force = false}) async => _http.close(force: force);
 
   Future<WebPresenterRestResponse> eventList() => get('/event/list');
@@ -162,7 +163,8 @@ class WebPresenterEventSocket {
         return event;
       });
 
-  void send(String action, {List<String>? properties, Object? values, int? id}) {
+  void send(String action,
+      {List<String>? properties, Object? values, int? id}) {
     _socket.add(jsonEncode({
       'data': {
         'action': action,

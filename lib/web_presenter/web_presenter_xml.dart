@@ -72,7 +72,9 @@ class StreamingService {
   void _write(_XmlWriter writer) {
     writer.open(
       'service',
-      customizableUrl ? const <String, String>{'customizable-url': 'true'} : null,
+      customizableUrl
+          ? const <String, String>{'customizable-url': 'true'}
+          : null,
     );
     writer.element('name', name);
     if (key != null) writer.element('key', key!);
@@ -118,7 +120,7 @@ class StreamingServer {
   final String url;
   final String? group;
 
-  /// Key/value items written under <srt-extensions><stream-id>.
+  /// Key/value items written under `srt-extensions` / `stream-id`.
   final Map<String, String> srtStreamIdExtensions;
 
   void _write(_XmlWriter writer) {
@@ -307,6 +309,5 @@ String _escapeText(String value) => value
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;');
 
-String _escapeAttribute(String value) => _escapeText(value)
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
+String _escapeAttribute(String value) =>
+    _escapeText(value).replaceAll('"', '&quot;').replaceAll("'", '&apos;');

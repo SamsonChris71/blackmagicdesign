@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2]
+
+### Changed
+
+- Applied lint-only control-flow, Dartdoc, and formatting improvements.
+
 ## [0.2.1]
 
 ### Changed
