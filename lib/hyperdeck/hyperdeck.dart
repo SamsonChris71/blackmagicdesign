@@ -1,3 +1,6 @@
+/// Ethernet-protocol support for Blackmagic Design HyperDeck devices.
+library hyperdeck;
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -70,125 +73,245 @@ class HyperDeckConnection {
           String name, Map<String, Object?> parameters) =>
       send(HyperDeckCommand.multiline(name, parameters));
 
-  // Named operations for the complete Ethernet protocol. Map arguments use
-  // the parameter names from Blackmagic's protocol document verbatim.
+  /// Requests the device's command help.
   Future<HyperDeckResponse> help() => send(HyperDeckCommand.help);
+
+  /// Requests abbreviated command help.
   Future<HyperDeckResponse> shortHelp() => send(HyperDeckCommand.shortHelp);
+
+  /// Lists the commands supported by the device.
   Future<HyperDeckResponse> supportedCommands() =>
       send(HyperDeckCommand.commands);
+
+  /// Requests device information.
   Future<HyperDeckResponse> deviceInfo() => send(HyperDeckCommand.deviceInfo);
+
+  /// Lists disks, optionally filtered with protocol parameters.
   Future<HyperDeckResponse> diskList(
           [Map<String, Object?> parameters = const {}]) =>
       command('disk list', parameters);
+
+  /// Ends the Ethernet protocol session.
   Future<HyperDeckResponse> quit() => send(HyperDeckCommand.quit);
+
+  /// Checks whether the device is reachable.
   Future<HyperDeckResponse> ping() => send(HyperDeckCommand.ping);
+
+  /// Enables or disables preview mode.
   Future<HyperDeckResponse> preview(bool enabled) =>
       command('preview', {'enable': enabled});
+
+  /// Starts playback with optional protocol parameters.
   Future<HyperDeckResponse> play(
           [Map<String, Object?> parameters = const {}]) =>
       command('play', parameters);
+
+  /// Requests the current playback range.
   Future<HyperDeckResponse> playRange() => send(HyperDeckCommand.playRange);
+
+  /// Sets the playback range using protocol parameters.
   Future<HyperDeckResponse> setPlayRange(Map<String, Object?> parameters) =>
       command('playrange set', parameters);
+
+  /// Clears the playback range.
   Future<HyperDeckResponse> clearPlayRange() =>
       send(HyperDeckCommand.clearPlayRange);
+
+  /// Requests or configures playback on startup.
   Future<HyperDeckResponse> playOnStartup(
           [Map<String, Object?> parameters = const {}]) =>
       command('play on startup', parameters);
+
+  /// Requests or configures playback options.
   Future<HyperDeckResponse> playOption(
           [Map<String, Object?> parameters = const {}]) =>
       command('play option', parameters);
+
+  /// Starts recording with optional protocol parameters.
   Future<HyperDeckResponse> record(
           [Map<String, Object?> parameters = const {}]) =>
       command('record', parameters);
-  Future<HyperDeckResponse> recordSpill() =>
-      send(HyperDeckCommand.recordSpill);
+
+  /// Starts spill recording.
+  Future<HyperDeckResponse> recordSpill() => send(HyperDeckCommand.recordSpill);
+
+  /// Starts spill recording to [slotId].
   Future<HyperDeckResponse> recordSpillToSlot(int slotId) =>
       command('record', {'spill': 'slot id: $slotId'});
+
+  /// Requests the spill-recording order.
   Future<HyperDeckResponse> spillOrder() => send(HyperDeckCommand.spillOrder);
+
+  /// Stops playback or recording.
   Future<HyperDeckResponse> stop() => send(HyperDeckCommand.stop);
+
+  /// Requests the number of clips.
   Future<HyperDeckResponse> clipsCount() => send(HyperDeckCommand.clipsCount);
+
+  /// Retrieves clips with optional protocol parameters.
   Future<HyperDeckResponse> clipsGet(
           [Map<String, Object?> parameters = const {}]) =>
       command('clips get', parameters);
+
+  /// Adds a clip using protocol parameters.
   Future<HyperDeckResponse> clipsAdd(Map<String, Object?> parameters) =>
       command('clips add', parameters);
+
+  /// Removes the clip identified by [clipId].
   Future<HyperDeckResponse> clipsRemove(int clipId) =>
       command('clips remove', {'clip id': clipId});
+
+  /// Removes every clip.
   Future<HyperDeckResponse> clipsClear() => send(HyperDeckCommand.clipsClear);
+
+  /// Rebuilds the clip list.
   Future<HyperDeckResponse> clipsRebuild() =>
       send(HyperDeckCommand.clipsRebuild);
+
+  /// Requests clip information with optional protocol parameters.
   Future<HyperDeckResponse> clipInfo(
           [Map<String, Object?> parameters = const {}]) =>
       command('clip info', parameters);
+
+  /// Requests transport information.
   Future<HyperDeckResponse> transportInfo() =>
       send(HyperDeckCommand.transportInfo);
+
+  /// Requests slot information with optional protocol parameters.
   Future<HyperDeckResponse> slotInfo(
           [Map<String, Object?> parameters = const {}]) =>
       command('slot info', parameters);
+
+  /// Selects a slot using protocol parameters.
   Future<HyperDeckResponse> slotSelect(Map<String, Object?> parameters) =>
       command('slot select', parameters);
+
+  /// Unblocks slots matching the supplied protocol parameters.
   Future<HyperDeckResponse> slotUnblock(
           [Map<String, Object?> parameters = const {}]) =>
       command('slot unblock', parameters);
+
+  /// Lists connected external drives.
   Future<HyperDeckResponse> externalDriveList() =>
       send(HyperDeckCommand.externalDriveList);
+
+  /// Selects an external drive by [device].
   Future<HyperDeckResponse> externalDriveSelect(String device) =>
       command('external drive select', {'device': device});
+
+  /// Requests the selected external drive.
   Future<HyperDeckResponse> externalDriveSelected() =>
       send(HyperDeckCommand.externalDriveSelected);
+
+  /// Requests cache information.
   Future<HyperDeckResponse> cacheInfo() => send(HyperDeckCommand.cacheInfo);
+
+  /// Requests or configures the dynamic range.
   Future<HyperDeckResponse> dynamicRange(
           [Map<String, Object?> parameters = const {}]) =>
       command('dynamic range', parameters);
+
+  /// Requests or configures notifications.
   Future<HyperDeckResponse> notificationSettings(
           [Map<String, Object?> parameters = const {}]) =>
       command('notify', parameters);
+
+  /// Moves the transport to [position].
   Future<HyperDeckResponse> goTo(Map<String, Object?> position) =>
       command('goto', position);
+
+  /// Jogs the transport to [timecode].
   Future<HyperDeckResponse> jog(String timecode) =>
       command('jog', {'timecode': timecode});
+
+  /// Shuttles at [speed].
   Future<HyperDeckResponse> shuttle(int speed) =>
       command('shuttle', {'speed': speed});
+
+  /// Requests or configures remote control.
   Future<HyperDeckResponse> remote(
           [Map<String, Object?> parameters = const {}]) =>
       command('remote', parameters);
+
+  /// Requests or configures device settings.
   Future<HyperDeckResponse> configuration(
           [Map<String, Object?> parameters = const {}]) =>
       command('configuration', parameters);
+
+  /// Requests the device uptime.
   Future<HyperDeckResponse> uptime() => send(HyperDeckCommand.uptime);
+
+  /// Prepares a format operation using protocol parameters.
   Future<HyperDeckResponse> prepareFormat(Map<String, Object?> parameters) =>
       command('format', parameters);
+
+  /// Confirms a pending format operation with [token].
   Future<HyperDeckResponse> confirmFormat(String token) =>
       command('format', {'confirm': token});
+
+  /// Enables or disables device identification.
   Future<HyperDeckResponse> identify(bool enabled) =>
       command('identify', {'enable': enabled});
+
+  /// Configures the watchdog period in seconds.
   Future<HyperDeckResponse> watchdog(int seconds) =>
       command('watchdog', {'period': seconds});
+
+  /// Reboots the device.
   Future<HyperDeckResponse> reboot() => send('reboot\n');
+
+  /// Requests slate clip metadata.
   Future<HyperDeckResponse> slateClips() => send(HyperDeckCommand.slateClips);
+
+  /// Sets slate clip metadata using protocol values.
   Future<HyperDeckResponse> setSlateClips(Map<String, Object?> values) =>
       multilineCommand('slate clips', values);
+
+  /// Requests slate project metadata.
   Future<HyperDeckResponse> slateProject() =>
       send(HyperDeckCommand.slateProject);
+
+  /// Sets slate project metadata using protocol values.
   Future<HyperDeckResponse> setSlateProject(Map<String, Object?> values) =>
       multilineCommand('slate project', values);
+
+  /// Requests slate lens metadata.
   Future<HyperDeckResponse> slateLens() => send(HyperDeckCommand.slateLens);
+
+  /// Sets slate lens metadata using protocol values.
   Future<HyperDeckResponse> setSlateLens(Map<String, Object?> values) =>
       multilineCommand('slate lens', values);
+
+  /// Lists configured NAS locations.
   Future<HyperDeckResponse> nasList() => send(HyperDeckCommand.nasList);
+
+  /// Lists discovered NAS locations.
   Future<HyperDeckResponse> nasDiscovered() =>
       send(HyperDeckCommand.nasDiscovered);
+
+  /// Requests the selected NAS location.
   Future<HyperDeckResponse> nasSelected() => send(HyperDeckCommand.nasSelected);
+
+  /// Deselects the active NAS location.
   Future<HyperDeckResponse> nasDeselect() => send(HyperDeckCommand.nasDeselect);
+
+  /// Adds a NAS location using protocol values.
   Future<HyperDeckResponse> nasAdd(Map<String, Object?> values) =>
       multilineCommand('nas add', values);
+
+  /// Removes the NAS location at [url].
   Future<HyperDeckResponse> nasRemove(String url) =>
       multilineCommand('nas remove', {'url': url});
+
+  /// Selects the NAS location at [url].
   Future<HyperDeckResponse> nasSelect(String url) =>
       multilineCommand('nas select', {'url': url});
+
+  /// Authenticates with the supplied protocol credentials.
   Future<HyperDeckResponse> authenticate(Map<String, Object?> credentials) =>
       multilineCommand('authenticate', credentials);
+
+  /// Sets the connection protocol [version].
   Future<HyperDeckResponse> setConnectionProtocolVersion(int version) =>
       command('connection protocol', {'response version': version});
 
@@ -231,9 +354,10 @@ class HyperDeckConnection {
     final values = <String, String>{};
     for (final line in lines.skip(1)) {
       final colon = line.indexOf(':');
-      if (colon > 0)
+      if (colon > 0) {
         values[line.substring(0, colon).trim().toLowerCase()] =
             line.substring(colon + 1).trim();
+      }
     }
     return HyperDeckResponse(int.parse(head.group(1)!),
         head.group(2)!.replaceFirst(RegExp(r':$'), ''), values, raw);
@@ -256,8 +380,9 @@ class HyperDeckConnection {
   void _onDone() => _failPending(
       StateError('HyperDeck closed the connection.'), StackTrace.current);
   void _failPending(Object error, StackTrace stackTrace) {
-    while (_pending.isNotEmpty)
+    while (_pending.isNotEmpty) {
       _pending.removeAt(0).completeError(error, stackTrace);
+    }
   }
 
   Future<void> close() async {
@@ -272,6 +397,9 @@ class HyperDeckConnection {
 
 /// Backwards-compatible static facade for the original package API.
 class HyperDeck {
+  /// Creates the backwards-compatible static facade.
+  HyperDeck();
+
   static String hyperDeckIP = '';
   static bool status = false;
   static int port = 9993;
@@ -358,8 +486,9 @@ class HyperDeck {
     status = true;
     final values = response.values;
     if (response.message.toLowerCase() == 'connection info' ||
-        response.message.toLowerCase() == 'device info')
+        response.message.toLowerCase() == 'device info') {
       deviceName = values['model'] ?? values['device name'];
+    }
     if (response.message.toLowerCase() == 'transport info') {
       deviceStatus = values['status'];
       speed = values['speed'];
@@ -381,9 +510,10 @@ HyperDeckResponse _parseForFacade(String raw) {
   final values = <String, String>{};
   for (final line in lines.skip(1)) {
     final colon = line.indexOf(':');
-    if (colon > 0)
+    if (colon > 0) {
       values[line.substring(0, colon).trim().toLowerCase()] =
           line.substring(colon + 1).trim();
+    }
   }
   return HyperDeckResponse(head == null ? 0 : int.parse(head.group(1)!),
       head?.group(2)?.replaceFirst(RegExp(r':$'), '') ?? '', values, raw);

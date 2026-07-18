@@ -1,9 +1,15 @@
 /// Shared connection settings for an ATEM switcher.
+library atem;
+
+/// Shared connection settings for an ATEM switcher.
 ///
 /// ATEM protocol commands are not implemented yet. This class is retained so
 /// applications using the original package API can keep their connection
 /// configuration in one place.
 class ATEM {
+  /// Creates shared ATEM connection settings.
+  ATEM();
+
   /// Address of the ATEM switcher.
   static String atemIP = '';
 

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1]
+
+### Changed
+
+- Added API documentation for ATEM and HyperDeck libraries and operations.
+- Applied HyperDeck lint-only control-flow formatting improvements.
+
 ## [0.2.0]
 
 ### Added
