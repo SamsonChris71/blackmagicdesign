@@ -49,14 +49,14 @@ class PreviewInputCommand extends AtemCommand {
   }
 }
 
-/// Cut command - instant transition (Cut Preview).
+/// Cut command - instant transition (Do Cut).
 class CutCommand extends AtemCommand {
   const CutCommand({required this.meIndex});
 
   final int meIndex;
 
   @override
-  String get code => 'CTPr';
+  String get code => 'DCut';
 
   @override
   Uint8List get data => build();
@@ -66,14 +66,14 @@ class CutCommand extends AtemCommand {
   }
 }
 
-/// Auto transition command.
+/// Auto transition command (Do Auto).
 class AutoTransitionCommand extends AtemCommand {
   const AutoTransitionCommand({required this.meIndex});
 
   final int meIndex;
 
   @override
-  String get code => 'ATPr';
+  String get code => 'DAut';
 
   @override
   Uint8List get data => build();

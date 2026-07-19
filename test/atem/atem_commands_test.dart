@@ -95,7 +95,7 @@ group('PreviewInputCommand (CPvI)', () {
     });
   });
 
-  group('CutCommand (CTPr)', () {
+  group('CutCommand (DCut)', () {
     test('builds correct payload for ME 0', () {
       const cmd = CutCommand(meIndex: 0);
       final data = cmd.data;
@@ -104,7 +104,7 @@ group('PreviewInputCommand (CPvI)', () {
       expect(data[1], 0); // padding
       expect(data[2], 0); // padding
       expect(data[3], 0); // padding
-      expect(cmd.code, 'CTPr');
+      expect(cmd.code, 'DCut');
     });
 
     test('builds with ME index 1', () {
@@ -125,7 +125,7 @@ group('PreviewInputCommand (CPvI)', () {
       expect(command.toBytes(), [
         0x00, 0x0C, // record length: header (8) + payload (4)
         0x00, 0x00, // reserved
-        0x43, 0x54, 0x50, 0x72, // CTPr
+        0x44, 0x43, 0x75, 0x74, // DCut
         0x00, 0x00, 0x00, 0x00, // ME 0 and padding
       ]);
     });
@@ -138,14 +138,14 @@ group('PreviewInputCommand (CPvI)', () {
 
       final commands = unpackCommands(payload);
       expect(commands, hasLength(2));
-      expect(commands[0].code, 'CTPr');
+      expect(commands[0].code, 'DCut');
       expect(commands[0].data, [0, 0, 0, 0]);
-      expect(commands[1].code, 'ATPr');
+      expect(commands[1].code, 'DAut');
       expect(commands[1].data, [1, 0, 0, 0]);
     });
   });
 
-  group('AutoTransitionCommand (ATPr)', () {
+  group('AutoTransitionCommand (DAut)', () {
     test('builds correct payload for ME 0', () {
       const cmd = AutoTransitionCommand(meIndex: 0);
       final data = cmd.data;
@@ -154,7 +154,7 @@ group('PreviewInputCommand (CPvI)', () {
       expect(data[1], 0); // padding
       expect(data[2], 0); // padding
       expect(data[3], 0); // padding
-      expect(cmd.code, 'ATPr');
+      expect(cmd.code, 'DAut');
     });
 
     test('builds with ME index 1', () {
