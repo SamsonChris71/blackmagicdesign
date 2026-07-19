@@ -1,27 +1,12 @@
-/// Shared connection settings for an ATEM switcher.
+/// ATEM SDK for Dart.
+///
+/// This package provides a complete implementation of the Blackmagic Design ATEM
+/// protocol for controlling ATEM switchers over UDP.
 library atem;
 
-/// Shared connection settings for an ATEM switcher.
-///
-/// ATEM protocol commands are not implemented yet. This class is retained so
-/// applications using the original package API can keep their connection
-/// configuration in one place.
-class ATEM {
-  /// Creates shared ATEM connection settings.
-  ATEM();
-
-  /// Address of the ATEM switcher.
-  static String atemIP = '';
-
-  /// Whether an ATEM connection is active.
-  static bool status = false;
-
-  /// Name reported by the connected switcher.
-  static String deviceName = '';
-
-  /// TCP port used by the ATEM protocol.
-  static int port = 9993;
-
-  /// Most recent response received from the switcher, if any.
-  static String? responseData;
-}
+export 'src/connection/atem_connection.dart';
+export 'src/state/atem_state.dart';
+export 'src/field/atem_fields.dart' hide StreamingState;
+export 'src/command/atem_commands.dart';
+export 'src/transport/atem_packet.dart';
+export 'src/transport/atem_udp_transport.dart';

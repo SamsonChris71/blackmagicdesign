@@ -1,8 +1,8 @@
 name: blackmagicdesign
 description: >-
-  Dart client utilities for controlling Blackmagic Design HyperDeck and Web
-  Presenter devices.
-version: 0.2.2
+  Dart client utilities for controlling Blackmagic Design HyperDeck, Web
+  Presenter, and ATEM switcher devices.
+version: 0.3.0
 homepage: https://github.com/SamsonChris71/blackmagicdesign
 repository: https://github.com/SamsonChris71/blackmagicdesign
 issue_tracker: https://github.com/SamsonChris71/blackmagicdesign/issues
@@ -10,11 +10,12 @@ topics:
   - blackmagic-design
   - hyperdeck
   - web-presenter
+  - atem
   - broadcast
   - video
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
   lints: ^2.1.1

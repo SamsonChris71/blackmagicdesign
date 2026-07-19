@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0]
+
+### Added
+
+- Atem Support Added
+
 ## [0.2.2]
 
 ### Changed
